@@ -10,7 +10,7 @@ class App extends React.Component {
     }
     _populateUserList(userList) {
         this.setState({
-            users: userList.map((u, idx) => `User ${idx + 1}`)
+            users: userList.map((u, idx) => userList[`${idx}`])
         });
     }
     constructor(props) {
