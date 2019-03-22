@@ -16,6 +16,7 @@ class ChatWindow extends React.Component {
             message: '' /* Current message */
         };
     }
+    //getUser(user)
     sendMessage(message) {
         if (message === '') { return false; }
         socket.emit('message', message);
@@ -25,8 +26,9 @@ class ChatWindow extends React.Component {
         const { users } = this.props;
         const { messages, message } = this.state;
         return (
-            <div className="chat-window">
-                <ChatWindow.Title />
+            //<div className="chat-window">
+            //    <ChatWindow.Title />
+            <div>
                 <ChatWindow.Messages messages={ messages } />
                 <ChatWindow.Users users={ users } />
                 <div className="input-container">
@@ -61,5 +63,6 @@ ChatWindow.Users = props => (
         { props.users.map(u => <div key={ u } className="user">{ u }</div>) }
     </div>
 );
+
 
 export default ChatWindow;

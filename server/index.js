@@ -11,12 +11,38 @@ const moment = require('moment');
 const PORT = 3500;
 
 let users = [];
+let userInformation = {};
+let chatRooms = {};
+var updateRoom = function(room, user){
+    if(!(room in chatRooms)){
+        chatRooms[room] = []
+        console.log(chatRooms)
+        chatRooms[room].push(user)
+        console.log(chatRooms)
+    }
+    else{
+        chatRooms[room].push(user)
+        console.log(chatRooms)
+    }
+}
 
 io.on('connection', connectingSocket => {
     console.log(`User connected (${connectingSocket.id})`);
 
+    //connectingSocket.on('chatrooms', getChatrooms)
+    //connectingSocket.on('join', joinRoom)
+    //connectingSocket.on('leave', leaveRoom)
+    //connectingSocket.on('create', createRoom)
+
+
+
+    updateRoom('default', connectingSocket.id)
     users.push(connectingSocket.id);
-    io.sockets.emit('users', users);
+    userInformation[connectingSocket.id] = 'default';
+    //io.sockets.emit('users', users);
+    io.sockets.emit('chatRooms', chatRooms);
+
+
 
     // Define messages to emit
     connectingSocket.on('message', msg => {
@@ -28,7 +54,10 @@ io.on('connection', connectingSocket => {
     connectingSocket.on('disconnect', () => {
         console.log(`User disconnected (${connectingSocket.id})`);
         users = users.filter(u => u !== connectingSocket.id);
-        io.emit('users', users);
+        //sliceRoom(connectingSocket.id)
+        var currentRoom = chatRooms[userInformation[connectingSocket.id]].filter(u => u !== connectingSocket.id)
+        chatRooms[userInformation[connectingSocket.id]] = currentRoom
+        io.emit('chatRooms', chatRooms);
     });
 });
 

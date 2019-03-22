@@ -1,12 +1,21 @@
 import React from 'react';
 import { socket } from './services/socketService';
-import ChatWindow from './components/ChatWindow/ChatWindow';
+//import ChatWindow from './components/ChatWindow/ChatWindow';
+import ChatRoomLobby from './components/ChatRoomLobby/ChatRoomLobby';
 
 class App extends React.Component {
     componentDidMount() {
+        /*
         socket.on('users', userList => {
             this._populateUserList(userList);
         });
+        */
+        socket.on('chatRooms', rooms =>{
+            console.log(rooms)
+            this.setState({
+                chatRooms: rooms
+            })
+        })
     }
     _populateUserList(userList) {
         this.setState({
@@ -16,14 +25,16 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            users: []
+            users: [],
+            chatRooms: new Object()
         };
     }
     render() {
-        const { users } = this.state;
+        const allRooms = this.state.chatRooms;
+        console.log(allRooms)
         return (
             <div className="container">
-                <ChatWindow users={ users } />
+                <ChatRoomLobby rooms={ allRooms } />
             </div>
         );
     }
