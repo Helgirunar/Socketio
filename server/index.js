@@ -11,6 +11,7 @@ const moment = require('moment');
 const PORT = 3500;
 
 let users = [];
+let nicks = [];
 
 io.on('connection', connectingSocket => {
     console.log(`User connected (${connectingSocket.id})`);
@@ -19,22 +20,23 @@ io.on('connection', connectingSocket => {
     // Define messages to emit
     connectingSocket.on('message', msg => {
         // Emit the message to everyone
-        io.emit('message', `${moment().format('llll')} - ${users[users.indexOf(connectingSocket.id) + 1]}: ${msg}`);
+        io.emit('message', `${moment().format('llll')} - ${nicks[users.indexOf(connectingSocket.id)]}: ${msg}`);
     });
 
     connectingSocket.on('nick', nick => {
-          users.push(nick);
-          io.sockets.emit('users', users);
+          users.push(connectingSocket.id);
+          nicks.push(nick);
+          io.sockets.emit('users',{
+            users: users,
+            nicks: nicks
+          });
     });
 
     connectingSocket.on('disconnect', () => {
         console.log(`User disconnected (${connectingSocket.id})`);
-        console.log(users[users.indexOf(connectingSocket.id) + 1] + " LOGGED OUT");
-        console.log(connectingSocket.id);
-        console.log(users);
         users = users.filter(u => u !== connectingSocket.id);
-        console.log(users);
-        io.emit('users', users);
+        nicks.splice(users.indexOf(connectingSocket.id),1);
+        io.emit('users', {users,nicks});
     });
 });
 

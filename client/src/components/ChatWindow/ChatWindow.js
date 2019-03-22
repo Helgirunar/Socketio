@@ -29,23 +29,25 @@ class ChatWindow extends React.Component {
       {
         if(nick == users[i]) {boolean = true; break;}
       }
-      if(nick == '') {return false; }
-      else if(boolean) {return false; }
-      else { socket.emit('nick', nick); }
-      console.log(users);
+      if(nick === '') {alert("Please type in a nickname"); return false;}
+      else if(boolean) {alert("Nickname in use"); return false;}
+      else { socket.emit('nick', nick);
+      document.getElementById("chat").style.display = "inherit";
+      document.getElementById("nick").style.display = "none";
+      }
     }
     render() {
         const { users } = this.props;
         const { messages, message, nick } = this.state;
         return (
           <div className ="container">
-            <div className="nick-window">
+            <div id="nick" className="nick-window">
               <div className="input-container">
                   <input type="text" value={ nick } onChange={e => this.setState({ nick: e.target.value })} placeholder="Enter your nick here..." />
-                  <button type="button" onClick={() => this.setNick(nick)}>Send</button>
+                  <button type="button" onClick={() => this.setNick(nick)}>Start Chatting!</button>
               </div>
             </div>
-            <div className="chat-window">
+            <div id="chat" className="chat-window">
                 <ChatWindow.Title />
                 <ChatWindow.Messages messages={ messages } />
                 <ChatWindow.Users users={ users } />

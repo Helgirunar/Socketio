@@ -5,12 +5,13 @@ import ChatWindow from './components/ChatWindow/ChatWindow';
 class App extends React.Component {
     componentDidMount() {
         socket.on('users', userList => {
+          console.log(userList);
             this._populateUserList(userList);
         });
     }
     _populateUserList(userList) {
         this.setState({
-            users: userList.map((u, idx) => userList[`${idx}`])
+            users: userList.users.map((u, idx) => userList.nicks[`${idx}`])
         });
     }
     constructor(props) {
@@ -21,6 +22,7 @@ class App extends React.Component {
     }
     render() {
         const { users } = this.state;
+        {console.log(users)}
         return (
             <div className="container">
                 <ChatWindow users={ users } />
