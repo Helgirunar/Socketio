@@ -25,15 +25,10 @@ var updateRoom = function(room, user){
         console.log(chatRooms)
     }
 }
+let nicks = [];
 
 io.on('connection', connectingSocket => {
     console.log(`User connected (${connectingSocket.id})`);
-
-    //connectingSocket.on('chatrooms', getChatrooms)
-    //connectingSocket.on('join', joinRoom)
-    //connectingSocket.on('leave', leaveRoom)
-    //connectingSocket.on('create', createRoom)
-
 
 
     updateRoom('default', connectingSocket.id)
@@ -44,11 +39,20 @@ io.on('connection', connectingSocket => {
 
 
 
+    console.log(users);
     // Define messages to emit
     connectingSocket.on('message', msg => {
-        console.log(msg);
         // Emit the message to everyone
-        io.emit('message', `${moment().format('llll')} - User ${users.indexOf(connectingSocket.id) + 1} - ${msg}`);
+        io.emit('message', `${moment().format('llll')} - ${nicks[users.indexOf(connectingSocket.id)]}: ${msg}`);
+    });
+
+    connectingSocket.on('nick', nick => {
+          users.push(connectingSocket.id);
+          nicks.push(nick);
+          io.sockets.emit('users',{
+            users: users,
+            nicks: nicks
+          });
     });
 
     connectingSocket.on('disconnect', () => {
@@ -58,6 +62,8 @@ io.on('connection', connectingSocket => {
         var currentRoom = chatRooms[userInformation[connectingSocket.id]].filter(u => u !== connectingSocket.id)
         chatRooms[userInformation[connectingSocket.id]] = currentRoom
         io.emit('chatRooms', chatRooms);
+        nicks.splice(users.indexOf(connectingSocket.id),1);
+        io.emit('users', {users,nicks});
     });
 });
 

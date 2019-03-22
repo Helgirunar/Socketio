@@ -6,14 +6,15 @@ class ChatWindow extends React.Component {
         console.log(socket);
         socket.on('message', message => {
             const { messages } = this.state;
-            this.setState({ messages: [ ...messages, message ] });
+            this.setState({ messages: [ ...messages, message ], nick: '' });
         });
     }
     constructor(props) {
         super(props);
         this.state = {
             messages: [], /* List of all messages within the public lobby */
-            message: '' /* Current message */
+            message: '', /* Current message */
+            nick: ''
         };
     }
     //getUser(user)
@@ -22,13 +23,39 @@ class ChatWindow extends React.Component {
         socket.emit('message', message);
         this.setState({ message: '' });
     }
+    setNick(nick) {
+      const { users } = this.props;
+      var boolean = false;
+      for(var i = 0;i < users.length;i++)
+      {
+        if(nick == users[i]) {boolean = true; break;}
+      }
+      if(nick === '') {alert("Please type in a nickname"); return false;}
+      else if(boolean) {alert("Nickname in use"); return false;}
+      else { socket.emit('nick', nick);
+      document.getElementById("chat").style.display = "inherit";
+      document.getElementById("nick").style.display = "none";
+      }
+    }
     render() {
         const { users } = this.props;
-        const { messages, message } = this.state;
+        const { messages, message, nick } = this.state;
         return (
+<<<<<<< HEAD
             //<div className="chat-window">
             //    <ChatWindow.Title />
             <div>
+=======
+          <div className ="container">
+            <div id="nick" className="nick-window">
+              <div className="input-container">
+                  <input type="text" value={ nick } onChange={e => this.setState({ nick: e.target.value })} placeholder="Enter your nick here..." />
+                  <button type="button" onClick={() => this.setNick(nick)}>Start Chatting!</button>
+              </div>
+            </div>
+            <div id="chat" className="chat-window">
+                <ChatWindow.Title />
+>>>>>>> 7a6f45925ef6ab5958a8371076847c153e243cb7
                 <ChatWindow.Messages messages={ messages } />
                 <ChatWindow.Users users={ users } />
                 <div className="input-container">
@@ -36,6 +63,7 @@ class ChatWindow extends React.Component {
                     <button type="button" onClick={() => this.sendMessage(message)}>Send</button>
                 </div>
             </div>
+          </div>
         );
     }
 };

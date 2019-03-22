@@ -90,6 +90,7 @@ code {
     margin: 0 auto;
     margin-top: 40px;
     animation: move-shadow 1s ease-in alternate infinite;
+    display: none;
     overflow: hidden;
 }
 

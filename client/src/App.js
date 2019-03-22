@@ -7,6 +7,7 @@ class App extends React.Component {
     componentDidMount() {
         /*
         socket.on('users', userList => {
+          console.log(userList);
             this._populateUserList(userList);
         });
         */
@@ -19,7 +20,7 @@ class App extends React.Component {
     }
     _populateUserList(userList) {
         this.setState({
-            users: userList.map((u, idx) => `User ${idx + 1}`)
+            users: userList.users.map((u, idx) => userList.nicks[`${idx}`])
         });
     }
     constructor(props) {
@@ -30,8 +31,13 @@ class App extends React.Component {
         };
     }
     render() {
+<<<<<<< HEAD
         const allRooms = this.state.chatRooms;
         console.log(allRooms)
+=======
+        const { users } = this.state;
+        {console.log(users)}
+>>>>>>> 7a6f45925ef6ab5958a8371076847c153e243cb7
         return (
             <div className="container">
                 <ChatRoomLobby rooms={ allRooms } />
